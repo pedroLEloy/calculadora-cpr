@@ -1,17 +1,33 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { RotateCcw, FileText } from 'lucide-react';
 import CulturaSelect from './components/CulturaSelect';
 import CurrencyInput from './components/CurrencyInput';
 import NumberInput from './components/NumberInput';
 import ResultPanel from './components/ResultPanel';
+import CotacaoCard from './components/CotacaoCard';
 import { calculateCPR } from './utils/calculateCPR';
 import { getCulturaById } from './utils/cultures';
+import { usePrecos } from './utils/usePrecos';
 
 export default function App() {
   const [cultura, setCultura] = useState('SOJA');
   const [valorCpr, setValorCpr] = useState(0);
   const [precoSaca, setPrecoSaca] = useState(0);
   const [produtividade, setProdutividade] = useState(0);
+
+  // Carrega cotações de /precos.json
+  const { data: precos, loading: precosLoading, error, recarregar } = usePrecos();
+
+  // Auto-preenche o preço da saca quando a cultura muda OU quando
+  // os preços terminam de carregar pela primeira vez.
+  useEffect(() => {
+    if (!precos?.precos) return;
+    const culturaInfo = getCulturaById(cultura);
+    const precoCotacao = precos.precos[culturaInfo.apiId];
+    if (precoCotacao != null) {
+      setPrecoSaca(precoCotacao);
+    }
+  }, [cultura, precos]);
 
   // Cálculo em tempo real (re-roda a cada digitação)
   const result = useMemo(
@@ -37,7 +53,7 @@ export default function App() {
               <FileText size={20} className="text-accent" />
             </div>
             <span className="font-mono text-xs font-bold tracking-[0.22em] text-accent uppercase">
-              CPR · v1.0
+              CPR · v1.1
             </span>
           </div>
 
@@ -66,6 +82,16 @@ export default function App() {
             <div className="flex flex-col gap-5">
               <CulturaSelect value={cultura} onChange={setCultura} />
 
+              {/* CARD DE COTAÇÃO ATUAL */}
+              <CotacaoCard
+                culturaId={cultura}
+                precos={precos}
+                loading={precosLoading}
+                error={error}
+                onAplicar={(p) => setPrecoSaca(p)}
+                onRecarregar={recarregar}
+              />
+
               <CurrencyInput
                 label="Valor total da CPR"
                 value={valorCpr}
@@ -89,7 +115,6 @@ export default function App() {
                 placeholder={String(culturaInfo.sugestao)}
               />
 
-              {/* Botão Limpar */}
               <button
                 type="button"
                 onClick={handleLimpar}

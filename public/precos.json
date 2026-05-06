@@ -1,0 +1,17 @@
+{
+  "$comentario": "Cotações em R$ por saca de 60kg. Atualize semanalmente consultando https://cepea.org.br/br ou https://www.noticiasagricolas.com.br/cotacoes/",
+  "atualizadoEm": "2026-05-06",
+  "fonte": "CEPEA/ESALQ + Notícias Agrícolas",
+  "fonteUrl": "https://cepea.org.br/br",
+  "precos": {
+    "soja": 122.51,
+    "milho-verao": 45.0,
+    "milho-safrinha": 45.0,
+    "sorgo": 45.0
+  },
+  "_observacoes": {
+    "soja": "Indicador CEPEA/ESALQ - Paraná (saca 60kg). Referência nacional.",
+    "milho": "Mediana das praças IMEA-MT. Milho-Verão e Milho-Safrinha têm a MESMA cotação (mercado não diferencia preço por época).",
+    "sorgo": "Mediana das praças do Mercado Físico (Sul/Centro-Oeste). Sorgo é menos cotado que milho/soja, dado pode estar 1-2 dias defasado."
+  }
+}
